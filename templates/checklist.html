@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de Coches</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .navbar-brand img {
+            width: 320px;
+            height: 170px;
+        }
+        .navbar-nav {
+            margin-left: auto;
+        }
+        .nav-link {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="static\Logotipo-ISI-Naranja-RGB sin marca_Mesa de trabajo 1.jpg" alt="Logo">
+            </a>
+            <div class="navbar-nav">
+                <a class="btn btn-warning" href="{{ url_for('lista') }}">Lista</a>
+                <a class="btn btn-warning mt-2" href="{{ url_for('index') }}">Registro</a>
+                <a class="btn btn-warning mt-2" href="{{ url_for('checklist') }}">Checklist</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Checklist de Coches</h1>
+        <a href="{{ url_for('checklist') }}" class="btn btn-warning mb-4"><h5><i class="bi bi-arrow-clockwise"></i>Refrescar antes de buscar otro coche</h5></a>
+        {% if message %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form id="checklistForm" method="POST" class="mb-5 p-4 shadow rounded bg-light">
+            <div class="mb-3">
+                <label for="numero_coche" class="form-label">Número de Coche o Matrícula(PUEDE AGREGAR COMENTARIOS):</label>
+                <input type="text" name="numero_coche" id="numero_coche" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="kilometraje" class="form-label">Tanque de Gasolina/Kilometraje:</label>
+                <input type="text" name="kilometraje" id="kilometraje" class="form-control" required>
+            </div>
+
+            <h3>Exteriores</h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Luces:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="luces" id="luces_si" value="1" required>
+                            <label class="form-check-label" for="luces_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="luces" id="luces_no" value="0">
+                            <label class="form-check-label" for="luces_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat this pattern for all exterior items -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Antena:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="antena" id="antena_si" value="1" required>
+                            <label class="form-check-label" for="antena_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="antena" id="antena_no" value="0">
+                            <label class="form-check-label" for="antena_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Espejo Lateral Derecho:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="espejo_derecho" id="espejo_derecho_si" value="1" required>
+                            <label class="form-check-label" for="espejo_derecho_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="espejo_derecho" id="espejo_derecho_no" value="0">
+                            <label class="form-check-label" for="espejo_derecho_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Espejo Lateral Izquierdo:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="espejo_izquierdo" id="espejo_izquierdo_si" value="1" required>
+                            <label class="form-check-label" for="espejo_izquierdo_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="espejo_izquierdo" id="espejo_izquierdo_no" value="0">
+                            <label class="form-check-label" for="espejo_izquierdo_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Cristales:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="cristales" id="cristales_si" value="1" required>
+                            <label class="form-check-label" for="cristales_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="cristales" id="cristales_no" value="0">
+                            <label class="form-check-label" for="cristales_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Emblema:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="emblema" id="emblema_si" value="1" required>
+                            <label class="form-check-label" for="cristales_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="emblema" id="emblema_no" value="0">
+                            <label class="form-check-label" for="emblema_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Llantas(4):</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="llantas" id="llantas_si" value="1" required>
+                            <label class="form-check-label" for="cristales_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="llantas" id="llantas_no" value="0">
+                            <label class="form-check-label" for="llantas_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tapon de Gasolina:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tapon_gasolina" id="tapon_gasolina_si" value="1" required>
+                            <label class="form-check-label" for="tapon_gasolina_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tapon_gasolina" id="tapon_gasolina_no" value="0">
+                            <label class="form-check-label" for="tapon_gasolina_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Carroceria sin Golpes:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="carroceria_sin_golpes" id="carroceria_sin_golpes_si" value="1" required>
+                            <label class="form-check-label" for="carroceria_sin_golpes_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="carroceria_sin_golpes" id="carroceria_sin_golpes_no" value="0">
+                            <label class="form-check-label" for="carroceria_sin_golpes_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Claxon:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="claxon" id="claxon_si" value="1" required>
+                            <label class="form-check-label" for="claxon_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="claxon" id="claxon_no" value="0">
+                            <label class="form-check-label" for="claxon_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more exterior items here -->
+            </div>
+
+            <h3>Interiores</h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Instrumentos de tablero:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="instrumentos_tablero" id="instrumentos_tablero_si" value="1" required>
+                            <label class="form-check-label" for="instrumentos_tablero_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="instrumentos_tablero" id="instrumentos_tablero_no" value="0">
+                            <label class="form-check-label" for="instrumentos_tablero_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat this pattern for all interior items -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Clima:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="clima" id="clima_si" value="1" required>
+                            <label class="form-check-label" for="clima_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="clima" id="clima_no" value="0">
+                            <label class="form-check-label" for="clima_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Limpiadores(Plumas):</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="limpiadores" id="limpiadores_si" value="1" required>
+                            <label class="form-check-label" for="limpiadores_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="limpiadores" id="limpiadores_no" value="0">
+                            <label class="form-check-label" for="limpiadores_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Bocinas:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="bocinas" id="bocinas_si" value="1" required>
+                            <label class="form-check-label" for="bocinas_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="bocinas" id="bocinas_no" value="0">
+                            <label class="form-check-label" for="bocinas_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Espejo Retrovisor:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="espejo_retrovisor" id="espejo_retrovisor_si" value="1" required>
+                            <label class="form-check-label" for="espejo_retrovisor_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="espejo_retrovisor" id="espejo_retrovisor_no" value="0">
+                            <label class="form-check-label" for="espejo_retrovisor_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Cinturones:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="cinturones" id="cinturones_si" value="1" required>
+                            <label class="form-check-label" for="cinturones_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="cinturones" id="cinturones_no" value="0">
+                            <label class="form-check-label" for="cinturones_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Botones de Interiores:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="botones_interiores" id="botones_interiores_si" value="1" required>
+                            <label class="form-check-label" for="botones_interiores_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="botones_interiores" id="botones_interiores_no" value="0">
+                            <label class="form-check-label" for="botones_interiores_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Manijas de Interiores:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="manijas_interiores" id="manijas_interiores_si" value="1" required>
+                            <label class="form-check-label" for="manijas_interiores_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="manijas_interiores" id="manijas_interiores_no" value="0">
+                            <label class="form-check-label" for="manijas_interiores_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tapetes:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tapetes" id="tapetes_si" value="1" required>
+                            <label class="form-check-label" for="tapetes_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tapetes" id="tapetes_no" value="0">
+                            <label class="form-check-label" for="tapetes_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Vestiduras en Buenas Condiciones:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="vestiduras" id="vestiduras_si" value="1" required>
+                            <label class="form-check-label" for="vestiduras_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="vestiduras" id="vestiduras_no" value="0">
+                            <label class="form-check-label" for="vestiduras_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more interior items here -->
+            </div>
+
+            <h3>Accesorios</h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Gato:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gato" id="gato_si" value="1" required>
+                            <label class="form-check-label" for="gato_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gato" id="gato_no" value="0">
+                            <label class="form-check-label" for="gato_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat this pattern for all accessory items -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Maneral de gato:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="maneral_gato" id="maneral_gato_si" value="1" required>
+                            <label class="form-check-label" for="maneral_gato_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="maneral_gato" id="maneral_gato_no" value="0">
+                            <label class="form-check-label" for="maneral_gato_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Llave de Ruedas:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="llave_ruedas" id="llave_ruedas_si" value="1" required>
+                            <label class="form-check-label" for="llave_ruedas_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="llave_ruedas" id="llave_ruedas_no" value="0">
+                            <label class="form-check-label" for="llave_ruedas_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Refacciones:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="refacciones" id="refacciones_si" value="1" required>
+                            <label class="form-check-label" for="refacciones_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="refacciones" id="refacciones_no" value="0">
+                            <label class="form-check-label" for="refacciones_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Estuche de Herramientas:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="herramientas" id="herramientas_si" value="1" required>
+                            <label class="form-check-label" for="herramientas_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="herramientas" id="herramientas_no" value="0">
+                            <label class="form-check-label" for="herramientas_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Extintor:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="extintor" id="extintor_si" value="1" required>
+                            <label class="form-check-label" for="extintor_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="extintor" id="extintor_no" value="0">
+                            <label class="form-check-label" for="extintor_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more accessory items here -->
+            </div>
+
+            <h3>Nivel de Fluidos del Vehículo</h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Aceite:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="aceite" id="aceite_si" value="1" required>
+                            <label class="form-check-label" for="aceite_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="aceite" id="aceite_no" value="0">
+                            <label class="form-check-label" for="aceite_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat this pattern for all fluid items -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Anticongelante:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="anticongelante" id="anticongelante_si" value="1" required>
+                            <label class="form-check-label" for="anticongelante_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="anticongelante" id="anticongelante_no" value="0">
+                            <label class="form-check-label" for="anticongelante_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Liquido de Frenos:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="liquido_frenos" id="liquido_frenos_si" value="1" required>
+                            <label class="form-check-label" for="liquido_frenos_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="liquido_frenos" id="liquido_frenos_no" value="0">
+                            <label class="form-check-label" for="liquido_frenos_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add more fluid items here -->
+            </div>
+
+            <h3>Documentación del Vehículo</h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tarjeta de circulación:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tarjeta_circulacion" id="tarjeta_circulacion_si" value="1" required>
+                            <label class="form-check-label" for="tarjeta_circulacion_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tarjeta_circulacion" id="tarjeta_circulacion_no" value="0">
+                            <label class="form-check-label" for="tarjeta_circulacion_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Repeat this pattern for all documentation items -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Papeles del seguro:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="papeles_seguro" id="papeles_seguro_si" value="1" required>
+                            <label class="form-check-label" for="papeles_seguro_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="papeles_seguro" id="papeles_seguro_no" value="0">
+                            <label class="form-check-label" for="papeles_seguro_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Licencia Vigente:</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="licencia_vigente" id="licencia_vigente_si" value="1" required>
+                            <label class="form-check-label" for="licencia_vigente_si">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="licencia_vigente" id="licencia_vigente_no" value="0">
+                            <label class="form-check-label" for="licencia_vigente_no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more documentation items here -->
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100"><h5>Guardar Checklist</h5></button>
+        </form>
+        <p id="lastUpdate" class="text-muted"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
